@@ -19,6 +19,7 @@ import sys
 from dataclasses import dataclass
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 
 from .cache import TTLCache
 from .hevy_client import HevyClient
@@ -44,7 +45,6 @@ def build_server() -> tuple[FastMCP, AppContext]:
     _configure_logging()
     client = HevyClient()
     ctx = AppContext(client=client, template_cache=TTLCache(ttl_seconds=24 * 60 * 60))
-
     mcp = FastMCP(
         name="hevy-mcp",
         instructions=(
@@ -54,10 +54,12 @@ def build_server() -> tuple[FastMCP, AppContext]:
             "before calling `create_routine` or `update_routine`. Do not invent ids. "
             "Workout list pages are capped at 10 items by Hevy."
         ),
+        transport_security=TransportSecuritySettings(
+            enable_dns_rebinding_protection=False,
+        ),
     )
     register_all(mcp, ctx)
     return mcp, ctx
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(prog="hevy-mcp")
