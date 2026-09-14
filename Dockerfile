@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY src ./src
-RUN pip install --no-cache-dir --prefix=/install "mcp<2"
+RUN pip install --no-cache-dir --prefix=/install "mcp<2" 
 
 # ---- runtime ---- #
 FROM python:3.12-slim
